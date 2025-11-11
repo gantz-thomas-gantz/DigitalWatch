@@ -1,0 +1,9 @@
+# Ignore everything
+*
+
+# But not this directory
+!DigitalWatch.srcs/
+
+# Also don’t ignore files inside this directory
+!DigitalWatch.srcs/**
+
