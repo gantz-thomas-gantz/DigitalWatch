@@ -26,15 +26,17 @@ architecture top_watch_architecture of top_watch is
   --------------------------------------------------------------------
   type state_t is (
     IDLE,
-    SET_HOURS,
-    SET_MINUTES,
-    SET_SECONDS,
-    SET_ALARM_H,
-    SET_ALARM_M,
-    ALARM_ACTIVE
+    SET_TIME,
+    SET_ALARM,
+    ACTIVATE_ALARM,
+    SET_TIME_HH,
+    SET_TIME_MM,
+    SET_TIME_SS,
+    SET_ALARM_HH,
+    SET_ALARM_MM,
   );
 
-  signal cur_state : state_t := IDLE;
+  signal state : state_t := IDLE;
 
 begin
 
@@ -50,25 +52,54 @@ begin
       case cur_state is
 
         when IDLE =>
-          null;
+          if btn_mode = '1' then 
+            state <= SET_TIME;
 
-        when SET_HOURS =>
-          null;
+        when SET_TIME =>
+          if btn_mode = '1' then 
+            state <= SET_ALARM;
+          if btn_select = '1' then 
+            state <= SET_TIME_HH;
 
-        when SET_MINUTES =>
-          null;
+        when SET_ALARM =>
+          if btn_mode = '1' then 
+            state <= ACTIVATE_ALARM;
+          if btn_select = '1' then 
+            state <= SET_ALARM_HH;
 
-        when SET_SECONDS =>
-          null;
+        when SET_TIME_HH =>
+          if btn_select = '1' then 
+            state <= SET_TIME_MM;
+          if btn_inc = '1' then 
+            state <= SET_TIME_HH;
 
-        when SET_ALARM_H =>
-          null;
+        when SET_TIME_MM =>
+          if btn_select = '1' then 
+            state <= SET_TIME_SS;
+          if btn_inc = '1' then 
+            state <= SET_TIME_MM;
 
-        when SET_ALARM_M =>
-          null;
+        when SET_TIME_SS =>
+          if btn_select = '1' then 
+            state <= SET_TIME;
+          if btn_inc = '1' then 
+            state <= SET_TIME_SS;
+          
+        when SET_ALARM_HH =>
+          if btn_mode = '1' then 
+            state <= SET_ALARM_MM;
+          if btn_inc = '1' then 
+            state <= SET_ALARM_HH;
 
-        when ALARM_ACTIVE =>
-          null;
+        when SET_ALARM_MM =>
+          if btn_mode = '1' then 
+            state <= SET_ALARM;
+          if btn_inc = '1' then 
+            state <= SET_ALARM_MM;
+
+        when ACTIVATE_ALARM =>
+          if btn_mode = '1' then 
+            state <= IDLE;
 
       end case;
     end if;
