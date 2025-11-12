@@ -3,6 +3,9 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity top_watch is
+  generic (
+    clk_freq : natural := 50000000  -- e.g. 50 MHz; match the type/value expected by the testbench
+  );
   port (
     clk        : in  std_logic;     -- system clock
     rst        : in  std_logic;
@@ -44,7 +47,6 @@ architecture rtl of top_watch is
   signal alarm_active_reg : std_logic := '0';
 
   -- 1 Hz tick generator
-  constant CLK_FREQ : natural := 50_000_000;  -- adjust to board clock
   signal tick_cnt   : unsigned(25 downto 0) := (others => '0');
   signal tick_1s    : std_logic := '0';
 
@@ -64,7 +66,7 @@ begin
       tick_cnt <= (others => '0');
       tick_1s  <= '0';
     elsif rising_edge(clk) then
-      if tick_cnt = to_unsigned(CLK_FREQ - 1, tick_cnt'length) then
+      if tick_cnt = to_unsigned(clk_freq - 1, tick_cnt'length) then
         tick_cnt <= (others => '0');
         tick_1s  <= '1';
       else
@@ -86,20 +88,20 @@ begin
     elsif rising_edge(clk) then
       if tick_1s = '1' then
         -- increment time ALWAYS
-        if ss_reg = 59 then
+        if ss_reg = to_unsigned(59, ss_reg'length) then
           ss_reg <= (others => '0');
-          if mm_reg = 59 then
+          if mm_reg = to_unsigned(59, mm_reg'length) then
             mm_reg <= (others => '0');
-            if hh_reg = 23 then
+            if hh_reg = to_unsigned(23, hh_reg'length) then
               hh_reg <= (others => '0');
             else
-              hh_reg <= hh_reg + 1;
+              hh_reg <= hh_reg + to_unsigned(1, hh_reg'length);
             end if;
           else
-            mm_reg <= mm_reg + 1;
+            mm_reg <= mm_reg + to_unsigned(1, mm_reg'length);
           end if;
         else
-          ss_reg <= ss_reg + 1;
+          ss_reg <= ss_reg + to_unsigned(1, ss_reg'length);
         end if;
       end if;
     end if;
@@ -131,10 +133,10 @@ begin
           if btn_select = '1' then
             state <= SET_TIME_MM;
           elsif btn_inc = '1' then
-            if hh_reg = 23 then
+            if hh_reg = to_unsigned(23, hh_reg'length) then
               hh_reg <= (others => '0');
             else
-              hh_reg <= hh_reg + 1;
+              hh_reg <= hh_reg + to_unsigned(1, hh_reg'length);
             end if;
           end if;
 
@@ -142,10 +144,10 @@ begin
           if btn_select = '1' then
             state <= SET_TIME_SS;
           elsif btn_inc = '1' then
-            if mm_reg = 59 then
+            if mm_reg = to_unsigned(59, mm_reg'length) then
               mm_reg <= (others => '0');
             else
-              mm_reg <= mm_reg + 1;
+              mm_reg <= mm_reg + to_unsigned(1, mm_reg'length);
             end if;
           end if;
 
@@ -153,10 +155,10 @@ begin
           if btn_select = '1' then
             state <= SET_TIME;
           elsif btn_inc = '1' then
-            if ss_reg = 59 then
+            if ss_reg = to_unsigned(59, ss_reg'length) then
               ss_reg <= (others => '0');
             else
-              ss_reg <= ss_reg + 1;
+              ss_reg <= ss_reg + to_unsigned(1, ss_reg'length);
             end if;
           end if;
 
