@@ -86,7 +86,7 @@ begin
       mm_reg <= (others => '0');
       hh_reg <= (others => '0');
     elsif rising_edge(clk) then
-      if tick_1s = '1' then
+      if tick_1s = '1' and state = IDLE then
         -- increment time ALWAYS
         if ss_reg = to_unsigned(59, ss_reg'length) then
           ss_reg <= (others => '0');

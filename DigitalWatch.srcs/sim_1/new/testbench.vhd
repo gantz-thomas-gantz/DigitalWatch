@@ -42,9 +42,9 @@ begin
     -- Clock generation (50 MHz -> 20 ns period)
     clk <= not clk after 10 ns;
     rst <= '1', '0' after 100 ns;  
-    btn_mode <= '0',        -- initial value
-                '1' after 100 ns,  -- press
-                '0' after 200 ns;  -- release
+    --btn_mode <= '0',        -- initial value
+    --            '1' after 100 ns,  -- press
+    --            '0' after 200 ns;  -- release
 
     
 
